@@ -1,9 +1,9 @@
 package com.fox.studio.routedistance;
 
 
+import java.util.Date;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Required;
 
 public class RouteModel extends RealmObject {
 
@@ -11,11 +11,22 @@ public class RouteModel extends RealmObject {
     private double fromPointLon;
     private double toPointLat;
     private double toPointLon;
+    private Date date;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
 
     public double getFromPointLat() {
         return fromPointLat;
     }
-     void setFromPointLat(double fromPointLat) {
+
+    void setFromPointLat(double fromPointLat) {
         this.fromPointLat = fromPointLat;
     }
 
@@ -23,7 +34,7 @@ public class RouteModel extends RealmObject {
         return fromPointLon;
     }
 
-     void setFromPointLon(double fromPointLon) {
+    void setFromPointLon(double fromPointLon) {
         this.fromPointLon = fromPointLon;
     }
 
@@ -31,7 +42,7 @@ public class RouteModel extends RealmObject {
         return toPointLat;
     }
 
-     void setToPointLat(double toPointLat) {
+    void setToPointLat(double toPointLat) {
         this.toPointLat = toPointLat;
     }
 
@@ -39,7 +50,7 @@ public class RouteModel extends RealmObject {
         return toPointLon;
     }
 
-     void setToPointLon(double toPointLon) {
+    void setToPointLon(double toPointLon) {
         this.toPointLon = toPointLon;
     }
 }

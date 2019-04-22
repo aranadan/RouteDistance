@@ -26,6 +26,7 @@ import com.google.maps.model.DirectionsResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -156,7 +157,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     void addDirectionToDB(){
-        RealmResults<RouteModel> results = mRealm.where(RouteModel.class).findAll();
+        RealmResults<RouteModel> results = mRealm.where(RouteModel.class).sort("date").findAll();
 
         if (results.size() < 10) {
             addItemToDB();
@@ -179,6 +180,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        model.setFromPointLon(pointsList.get(0).longitude);
        model.setToPointLat(pointsList.get(1).latitude);
        model.setToPointLon(pointsList.get(1).longitude);
+       model.setDate(new Date());
        mRealm.commitTransaction();
    }
 }

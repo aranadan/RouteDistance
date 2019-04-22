@@ -27,10 +27,13 @@ public class MyListAdapter extends RealmBaseAdapter<RouteModel> implements ListA
 
         TextView tvFrom = convertView.findViewById(R.id.tvFrom);
         TextView tvTo = convertView.findViewById(R.id.tvTo);
+        TextView tvDate = convertView.findViewById(R.id.tvDate);
 
         RouteModel model = getItem(position);
         tvFrom.setText("From point: " + model.getFromPointLat() + ", " + model.getFromPointLon());
         tvTo.setText("To point: " + model.getToPointLat() + ", " + model.getToPointLon());
+        tvDate.setText(model.getDate().toString());
+
 
         return convertView;
     }
