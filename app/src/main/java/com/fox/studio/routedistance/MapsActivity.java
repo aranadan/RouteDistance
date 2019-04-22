@@ -4,13 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,6 +27,7 @@ import com.google.maps.model.DirectionsResult;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -99,7 +100,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //add second marker to the map
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title("Finish");
 
-
                 addDirectionToDB();
 
                 //request to gmaps api
@@ -108,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     result = DirectionsApi.newRequest(geoApiContext)
                             .origin(new com.google.maps.model.LatLng(pointsList.get(0).latitude, pointsList.get(0).longitude))//Место старта
                             .destination(new com.google.maps.model.LatLng(pointsList.get(1).latitude, pointsList.get(1).longitude))//Пункт назначения
+                            .alternatives(true)
                             .await();//Промежуточные точки.
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -119,14 +120,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 Log.d("onMapReady", "AddPolyline ");
-                //Преобразование итогового пути в набор точек
-                mMap.addPolyline(new PolylineOptions().addAll(PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath())));
+
+                //draw multi way point
+                for (int i = 0; i < result.routes.length; i++){
+
+                    int red =  new Random().nextInt(256);
+                    int green = new Random().nextInt(256);
+                    int blue = new Random().nextInt(256);
+                    int randomColor = Color.argb(200,red,green,blue);
+                    mMap.addPolyline(new PolylineOptions().addAll(PolyUtil.decode(result.routes[i].overviewPolyline.getEncodedPath()))).setColor(randomColor);
+                }
+
+                //mMap.addPolyline(new PolylineOptions().addAll(PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath())));
             }
 
             mMap.addMarker(markerOptions);
         });
-
-
     }
 
     //обработка результата запроса на определение местоположения
@@ -160,9 +169,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             addItemToDB();
         }
-
-
-
     }
 
    void addItemToDB(){
