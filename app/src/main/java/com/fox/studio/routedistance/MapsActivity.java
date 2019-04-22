@@ -2,12 +2,15 @@ package com.fox.studio.routedistance;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -33,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int LOCATION_REQUEST_CODE = 500;
     private List<LatLng> pointsList;
     private Realm mRealm;
+    private FloatingActionButton fab;
 
 
     @Override
@@ -47,6 +52,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         pointsList = new ArrayList<>();
         Realm.init(this);
         mRealm = Realm.getDefaultInstance();
+
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+            startActivity(intent);
+        });
     }
 
 
@@ -88,14 +99,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //add second marker to the map
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title("Finish");
 
-                //add points to RealmDB
-                mRealm.beginTransaction();
-                RouteModel model = mRealm.createObject(RouteModel.class);
-                model.setFromPointLat(pointsList.get(0).latitude);
-                model.setFromPointLon(pointsList.get(0).longitude);
-                model.setToPointLat(pointsList.get(1).latitude);
-                model.setToPointLon(pointsList.get(1).longitude);
-                mRealm.commitTransaction();
+
+                addDirectionToDB();
 
                 //request to gmaps api
                 DirectionsResult result = null;
@@ -140,4 +145,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onDestroy();
         mRealm.close();
     }
+
+    void addDirectionToDB(){
+        RealmResults<RouteModel> results = mRealm.where(RouteModel.class).findAll();
+
+        if (results.size() < 10) {
+            addItemToDB();
+
+        } else {
+            //delete
+            mRealm.beginTransaction();
+            results.deleteLastFromRealm();
+            mRealm.commitTransaction();
+
+            addItemToDB();
+        }
+
+
+
+    }
+
+   void addItemToDB(){
+       //add points to RealmDB
+       mRealm.beginTransaction();
+       RouteModel model = mRealm.createObject(RouteModel.class);
+       model.setFromPointLat(pointsList.get(0).latitude);
+       model.setFromPointLon(pointsList.get(0).longitude);
+       model.setToPointLat(pointsList.get(1).latitude);
+       model.setToPointLon(pointsList.get(1).longitude);
+       mRealm.commitTransaction();
+   }
 }
