@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "89393274645",
+    "firebase_url": "https://totemic-ground-238005.firebaseio.com",
+    "project_id": "totemic-ground-238005",
+    "storage_bucket": "totemic-ground-238005.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89393274645:android:2d6f030107d0ed17",
+        "android_client_info": {
+          "package_name": "com.fox.studio.routedistance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "89393274645-us6f8ecdf2qmk8ofvkqmffqdgf3htg3i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeAE07D-mv1AOkZ-tKBG5HfvQw1_U0iYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "89393274645-us6f8ecdf2qmk8ofvkqmffqdgf3htg3i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
