@@ -164,7 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             //delete
             mRealm.beginTransaction();
-            results.deleteLastFromRealm();
+            results.deleteFirstFromRealm();
             mRealm.commitTransaction();
 
             addItemToDB();
