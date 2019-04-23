@@ -39,7 +39,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int LOCATION_REQUEST_CODE = 500;
     private List<LatLng> pointsList;
     private Realm mRealm;
-    private FloatingActionButton fab;
 
 
     @Override
@@ -55,7 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Realm.init(this);
         mRealm = Realm.getDefaultInstance();
 
-        fab = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), ListActivity.class);
             startActivity(intent);
