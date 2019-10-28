@@ -13,7 +13,7 @@ import io.realm.RealmBaseAdapter;
 
 public class MyListAdapter extends RealmBaseAdapter<RouteModel> implements ListAdapter {
 
-    public MyListAdapter(@Nullable OrderedRealmCollection<RouteModel> data) {
+    MyListAdapter(@Nullable OrderedRealmCollection<RouteModel> data) {
         super(data);
     }
 

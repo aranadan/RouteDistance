@@ -17,10 +17,11 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+
         RealmResults<RouteModel> results = Realm.getDefaultInstance().where(RouteModel.class).sort("date").findAll();
         Log.d("ListActivity", results.size() + " ");
 
-        MyListAdapter adapter = new MyListAdapter( results);
+        MyListAdapter adapter = new MyListAdapter(results);
         ListView listView =  findViewById(R.id.list);
 
         listView.setAdapter(adapter);

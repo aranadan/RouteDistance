@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Random;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -50,9 +51,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
         pointsList = new ArrayList<>();
-        Realm.init(this);
-        mRealm = Realm.getDefaultInstance();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
@@ -61,6 +61,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initRealm();
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -122,12 +127,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("onMapReady", "AddPolyline ");
 
                 //draw multi way point
-                for (int i = 0; i < result.routes.length; i++){
+                for (int i = 0; i < result.routes.length; i++) {
 
-                    int red =  new Random().nextInt(256);
+                    int red = new Random().nextInt(256);
                     int green = new Random().nextInt(256);
                     int blue = new Random().nextInt(256);
-                    int randomColor = Color.argb(200,red,green,blue);
+                    int randomColor = Color.argb(200, red, green, blue);
                     mMap.addPolyline(new PolylineOptions().addAll(PolyUtil.decode(result.routes[i].overviewPolyline.getEncodedPath()))).setColor(randomColor);
                 }
 
@@ -152,10 +157,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mRealm.close();
+
     }
 
-    void addDirectionToDB(){
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mRealm.close();
+
+    }
+
+    void addDirectionToDB() {
         RealmResults<RouteModel> results = mRealm.where(RouteModel.class).sort("date").findAll();
 
         if (results.size() < 10) {
@@ -171,15 +183,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-   void addItemToDB(){
-       //add points to RealmDB
-       mRealm.beginTransaction();
-       RouteModel model = mRealm.createObject(RouteModel.class);
-       model.setFromPointLat(pointsList.get(0).latitude);
-       model.setFromPointLon(pointsList.get(0).longitude);
-       model.setToPointLat(pointsList.get(1).latitude);
-       model.setToPointLon(pointsList.get(1).longitude);
-       model.setDate(new Date());
-       mRealm.commitTransaction();
-   }
+    void addItemToDB() {
+        //add points to RealmDB
+        mRealm.beginTransaction();
+        RouteModel model = mRealm.createObject(RouteModel.class);
+        model.setFromPointLat(pointsList.get(0).latitude);
+        model.setFromPointLon(pointsList.get(0).longitude);
+        model.setToPointLat(pointsList.get(1).latitude);
+        model.setToPointLon(pointsList.get(1).longitude);
+        model.setDate(new Date());
+        mRealm.commitTransaction();
+    }
+
+    void initRealm() {
+        Realm.init(this);
+
+        try {
+            mRealm = Realm.getDefaultInstance();
+
+        } catch (Exception e) {
+
+            // Get a Realm instance for this thread
+            RealmConfiguration config = new RealmConfiguration.Builder()
+                    .deleteRealmIfMigrationNeeded()
+                    .build();
+            mRealm = Realm.getInstance(config);
+
+        }
+    }
+
 }
